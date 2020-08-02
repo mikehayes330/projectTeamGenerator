@@ -11,11 +11,40 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 let employees = [];
 
+
 function startApp() {
   console.log(
     "Lets build a team, please answer the following questions about your team to generate a webpage with quick easy access to your teams information."
   );
-// function that prompts for the INTERN info and constructs the INTERN object
+
+    function checkManager(){
+        return inquirer.prompt([
+            {
+                type: "list",
+                name: "checkManager",
+                message: "This app is built to be used by the manager of the team, Are you the manager?",
+                choices: ["YES", "NO"],
+              },
+
+        ]).then(function(response){
+            if(response.checkManager === 'YES'){
+                addManager();
+
+            } else {
+                console.log(`
+                --------------------------------------
+                please have your manager fill this out.
+                --------------------------------------
+                `)
+            }
+        })
+
+    }
+
+
+
+
+  // function that prompts for the INTERN info and constructs the INTERN object
   function addIntern() {
     return inquirer
       .prompt([
@@ -76,7 +105,10 @@ function startApp() {
         if (response.whichMember === "Im done, lets finalize it!") {
           
             fs.writeFile(outputPath, render(employees), 'utf8', function(err){
-                console.log("You have succesfully Written your HTML!!")
+                console.log(`
+                ---------------------------------------
+               You have succesfully Written your HTML!!
+               ---------------------------------------`)
             })
           
         }
@@ -157,7 +189,7 @@ function startApp() {
         whichMember();
       });
   }
-  addManager();
+  checkManager();
 }
 startApp();
 
